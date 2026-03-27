@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Football Trumps{% endblock %}</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            background-image: url("{% static 'images/pitch.svg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Overlay to keep content readable over the grass */
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 2.5rem 3rem;
+            width: 100%;
+            max-width: 420px;
+            color: #fff;
+        }
+
+        .card h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Messages */
+        .messages {
+            list-style: none;
+            margin-bottom: 1rem;
+        }
+
+        .messages li {
+            padding: 0.6rem 0.9rem;
+            border-radius: 6px;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Forms */
+        p {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #d4edda;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+        }
+
+        input[type="email"]::placeholder,
+        input[type="password"]::placeholder,
+        input[type="text"]::placeholder {
+            color: rgba(255,255,255,0.45);
+        }
+
+        /* Error list under fields */
+        ul.errorlist {
+            list-style: none;
+            margin: 0.25rem 0 0;
+            padding: 0;
+        }
+
+        ul.errorlist li {
+            font-size: 0.8rem;
+            color: #ff8a80;
+        }
+
+        /* Checkbox row */
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            accent-color: #4CAF50;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Buttons */
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            background: #4CAF50;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            letter-spacing: 0.5px;
+        }
+
+        button[type="submit"]:hover {
+            background: #388E3C;
+        }
+
+        /* Subtle secondary button (e.g. logout) */
+        button.btn-secondary {
+            background: rgba(255,255,255,0.12);
+            margin-top: 1rem;
+        }
+
+        button.btn-secondary:hover {
+            background: rgba(255,255,255,0.22);
+        }
+
+        /* Links */
+        .card-links {
+            margin-top: 1.25rem;
+            text-align: center;
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .card-links a {
+            color: #81C784;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .card-links a:hover {
+            text-decoration: underline;
+        }
+
+        .card-links p + p {
+            margin-top: 0.4rem;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="page-wrapper">
+        {% block content %}{% endblock %}
+    </div>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
