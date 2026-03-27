@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Trumps</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            background-image: url("{% static 'images/pitch.svg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .landing {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            margin-top: 10vh;
+            color: #fff;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow:
+                0 0 8px rgba(0,0,0,0.6),
+                0 2px 4px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .cta-group {
+            position: absolute;
+            /* sit roughly at the centre circle — ~52% down */
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.1rem;
+        }
+
+        .cta-group a {
+            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            text-shadow:
+                0 0 10px rgba(0,0,0,0.55),
+                0 2px 4px rgba(0,0,0,0.45);
+            transition: color 0.15s, text-shadow 0.15s;
+        }
+
+        .cta-group a:hover {
+            color: #c8f5c9;
+            text-shadow:
+                0 0 14px rgba(0,0,0,0.7),
+                0 2px 6px rgba(0,0,0,0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="landing">
+        <h1 class="title">Football Trump</h1>
+
+        <div class="cta-group">
+            <a href="{% url 'accounts:login' %}">Login</a>
+            <a href="{% url 'accounts:register' %}">Sign up</a>
+        </div>
+    </div>
+</body>
+</html>
