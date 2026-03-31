@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -62,9 +63,14 @@ class RarityDetailView(View):
             for card in all_cards
         ]
 
+        paginator = Paginator(cards, 12)
+        page_obj = paginator.get_page(request.GET.get('page'))
+
         rarity_meta = next(m for m in RARITY_META if m['key'] == rarity)
         return render(request, self.template_name, {
-            'cards': cards,
+            'page_obj': page_obj,
+            'cards': page_obj.object_list,
+            'total_cards': len(cards),
             'rarity_meta': rarity_meta,
             'rarity_label': dict(Rarity.choices)[rarity],
         })

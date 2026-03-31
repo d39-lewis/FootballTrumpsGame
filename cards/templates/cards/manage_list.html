@@ -121,8 +121,8 @@
 <div class="wrapper">
     <nav class="game-nav">
         <a href="{% url 'home' %}">Home</a>
-        <a href="#">How to play</a>
-        <a href="#">Packs</a>
+        <a href="{% url 'how_to_play' %}">How to play</a>
+        <a href="{% url 'store:store' %}">Packs</a>
         <a href="{% url 'cards:collection' %}" class="active">Cards</a>
         <a href="{% url 'accounts:settings' %}">Settings</a>
     </nav>

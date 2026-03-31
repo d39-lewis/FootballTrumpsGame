@@ -94,6 +94,7 @@ class UserSettings(models.Model):
         related_name='settings',
     )
     music_enabled = models.BooleanField(default=True)
+    points = models.PositiveIntegerField(default=500)
 
     class Meta:
         verbose_name = 'user settings'

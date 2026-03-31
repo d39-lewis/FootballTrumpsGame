@@ -149,6 +149,19 @@ class UserSettingsTests(TestCase):
         self.user.settings.refresh_from_db()
         self.assertFalse(self.user.settings.music_enabled)
 
+    def test_points_default_500_on_signup(self):
+        self.assertEqual(self.user.settings.points, 500)
+
+    def test_points_can_be_updated(self):
+        self.user.settings.points = 350
+        self.user.settings.save()
+        self.user.settings.refresh_from_db()
+        self.assertEqual(self.user.settings.points, 350)
+
+    def test_each_new_user_gets_500_points(self):
+        user2 = make_user(email='player2@example.com')
+        self.assertEqual(user2.settings.points, 500)
+
 
 # ──────────────────────────────────────────────────────────────────────────────
 # PasswordResetToken model
@@ -619,3 +632,15 @@ class LandingAndHomeViewTests(TestCase):
     def test_home_returns_200_when_logged_in(self):
         self.client.force_login(self.user)
         self.assertEqual(self.client.get('/home/').status_code, 200)
+
+    def test_home_shows_500_points_for_new_user(self):
+        self.client.force_login(self.user)
+        response = self.client.get('/home/')
+        self.assertEqual(response.context['points'], 500)
+
+    def test_home_points_reflect_updated_value(self):
+        self.user.settings.points = 250
+        self.user.settings.save()
+        self.client.force_login(self.user)
+        response = self.client.get('/home/')
+        self.assertEqual(response.context['points'], 250)
