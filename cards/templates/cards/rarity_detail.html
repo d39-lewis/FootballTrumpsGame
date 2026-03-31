@@ -1,4 +1,4 @@
-{% load static %}
+{% load static card_extras %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +15,9 @@
             display: flex; align-items: flex-start;
             justify-content: center; padding: 2rem 0;
         }
-        .game-panel { width: 82%; max-width: 1000px; }
+        .game-panel { width: 90%; max-width: 1200px; }
+
+        /* Nav */
         .game-nav {
             display: flex; border-radius: 12px 12px 0 0; overflow: hidden;
             border: 1px solid rgba(255,255,255,0.15); border-bottom: none;
@@ -31,6 +33,7 @@
         .game-nav a.active    { background: rgba(0,0,0,0.82); }
         .game-nav a:hover:not(.active) { background: rgba(0,0,0,0.68); }
 
+        /* Panel */
         .panel-body {
             background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
             border: 1px solid rgba(255,255,255,0.15);
@@ -38,100 +41,86 @@
             padding: 2rem; min-height: 420px;
         }
         .panel-header {
-            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 1.8rem;
         }
         .back-link {
             color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem;
         }
         .back-link:hover { color: #fff; }
         .panel-header h2 { color: #fff; font-size: 1.2rem; font-weight: 700; }
+        .count-label { color: rgba(255,255,255,0.45); font-size: 0.85rem; margin-left: auto; }
 
         /* Card grid */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 1.2rem;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.4rem;
         }
 
-        .trump-card {
-            width: 100%; aspect-ratio: 155/215;
-            border-radius: 10px; padding: 8px;
-            display: flex; flex-direction: column;
-            position: relative; overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
+        /* Card wrapper */
+        .card-wrap {
+            position: relative;
+            transition: transform 0.2s, filter 0.2s;
+            cursor: default;
         }
-        .trump-card:hover { transform: translateY(-4px) scale(1.02); }
-        .trump-card.unowned { filter: grayscale(0.7) brightness(0.5); }
+        .card-wrap:hover { transform: translateY(-6px) scale(1.03); }
+        .card-wrap.unowned { filter: grayscale(0.75) brightness(0.45); }
+        .card-wrap.unowned:hover { filter: grayscale(0.60) brightness(0.55); }
 
-        .card-stars { text-align: right; font-size: 0.65rem; margin-bottom: 3px; }
-        .card-img-area {
-            flex: 1; border-radius: 5px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 5px; overflow: hidden;
-        }
-        .card-img-area img { width: 100%; height: 100%; object-fit: cover; }
-        .silhouette { opacity: 0.35; width: 65%; }
-        .card-name-bar {
-            border-radius: 3px; padding: 2px 5px;
-            font-size: 0.6rem; font-weight: 700;
-            text-align: center; margin-bottom: 4px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .card-stats { display: flex; flex-direction: column; gap: 2px; }
-        .stat-row {
-            display: flex; justify-content: space-between;
-            font-size: 0.55rem; font-weight: 600;
-            padding: 1px 4px; border-radius: 2px;
-        }
+        /* Quantity badge */
         .qty-badge {
-            position: absolute; top: 6px; left: 6px;
+            position: absolute; top: 10px; left: 10px; z-index: 10;
             background: #4CAF50; color: #fff;
-            font-size: 0.6rem; font-weight: 700;
-            padding: 1px 5px; border-radius: 8px;
+            font-size: 0.65rem; font-weight: 800;
+            padding: 2px 7px; border-radius: 10px;
+            pointer-events: none;
         }
 
-        /* Rarity colour schemes (same as collection page) */
-        .card-common    { background: linear-gradient(160deg,#3b1c08,#1a0a02); border: 2px solid #8b5a2b; box-shadow: 0 0 10px rgba(139,90,43,0.4); }
-        .card-common .card-stars { color: #cd8c3c; }
-        .card-common .card-img-area { background: linear-gradient(135deg,rgba(139,90,43,0.25),rgba(80,40,10,0.4)); border: 1px solid rgba(139,90,43,0.4); }
-        .card-common .card-name-bar { background: linear-gradient(90deg,#8b5a2b,#cd8c3c,#8b5a2b); color: #fff8f0; }
-        .card-common .stat-row { background: rgba(139,90,43,0.2); color: #e8c49a; border: 1px solid rgba(139,90,43,0.3); }
+        /* Not-owned overlay label */
+        .unowned-label {
+            position: absolute; bottom: 38px; left: 0; right: 0; z-index: 10;
+            text-align: center; font-size: 0.65rem; font-weight: 700;
+            color: rgba(255,255,255,0.55); letter-spacing: 1px;
+            pointer-events: none;
+        }
 
-        .card-rare      { background: linear-gradient(160deg,#2a2a2a,#111); border: 2px solid #aaa; box-shadow: 0 0 10px rgba(180,180,180,0.3); }
-        .card-rare .card-stars { color: #c0c0c0; }
-        .card-rare .card-img-area { background: linear-gradient(135deg,rgba(160,160,160,0.2),rgba(80,80,80,0.4)); border: 1px solid rgba(160,160,160,0.35); }
-        .card-rare .card-name-bar { background: linear-gradient(90deg,#666,#bbb,#666); color: #fff; }
-        .card-rare .stat-row { background: rgba(160,160,160,0.15); color: #d4d4d4; border: 1px solid rgba(160,160,160,0.25); }
+        .empty-state {
+            text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);
+        }
 
-        .card-ultra-rare { background: linear-gradient(160deg,#2a1f00,#0f0900); border: 2px solid #ffd700; box-shadow: 0 0 14px rgba(255,215,0,0.5); }
-        .card-ultra-rare .card-stars { color: #ffd700; }
-        .card-ultra-rare .card-img-area { background: linear-gradient(135deg,rgba(255,215,0,0.2),rgba(180,130,0,0.35)); border: 1px solid rgba(255,215,0,0.45); }
-        .card-ultra-rare .card-name-bar { background: linear-gradient(90deg,#b8860b,#ffd700,#b8860b); color: #fff; }
-        .card-ultra-rare .stat-row { background: rgba(255,215,0,0.12); color: #ffe680; border: 1px solid rgba(255,215,0,0.25); }
-
-        .card-legendary { background: linear-gradient(160deg,#1a1000,#050300); border: 2px solid #e8a800; box-shadow: 0 0 18px rgba(232,168,0,0.6); }
-        .card-legendary .card-stars { color: #ffc200; margin-top: 14px; }
-        .card-legendary .card-img-area { background: radial-gradient(ellipse,rgba(255,200,0,0.25),rgba(100,60,0,0.4)); border: 1px solid rgba(232,168,0,0.5); }
-        .card-legendary .card-name-bar { background: linear-gradient(90deg,#7a5500,#e8a800,#7a5500); color: #fff8e0; }
-        .card-legendary .stat-row { background: rgba(232,168,0,0.13); color: #ffd060; border: 1px solid rgba(232,168,0,0.28); }
-        .card-legendary::before { content:'LEGENDARY'; position:absolute; top:7px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg,#b8860b,#ffd700,#b8860b); color:#fff; font-size:0.45rem; font-weight:900; letter-spacing:2px; padding:2px 8px; border-radius:3px; white-space:nowrap; }
-
-        .card-epic { background: linear-gradient(160deg,#0d0d1a,#050508); border: 2px solid #a78bfa; box-shadow: 0 0 16px rgba(167,139,250,0.5); }
-        .card-epic .card-stars { color: #c4b5fd; margin-top: 14px; }
-        .card-epic .card-img-area { background: linear-gradient(135deg,rgba(167,139,250,0.2),rgba(244,114,182,0.15),rgba(99,102,241,0.2)); border: 1px solid rgba(167,139,250,0.4); }
-        .card-epic .card-name-bar { background: linear-gradient(90deg,#4c1d95,#a78bfa,#4c1d95); color: #fff; }
-        .card-epic .stat-row { background: rgba(167,139,250,0.12); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.25); }
-        .card-epic::before { content:'EPIC'; position:absolute; top:7px; left:50%; transform:translateX(-50%); background:linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed); color:#fff; font-size:0.45rem; font-weight:900; letter-spacing:2px; padding:2px 8px; border-radius:3px; }
-
-        .empty-state { text-align:center; padding:3rem; color:rgba(255,255,255,0.5); }
+        /* Pagination */
+        .pagination {
+            display: flex; justify-content: center; align-items: center;
+            gap: 0.4rem; margin-top: 2rem; flex-wrap: wrap;
+        }
+        .page-btn {
+            min-width: 2.2rem; height: 2.2rem; padding: 0 0.6rem;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; font-size: 0.88rem; font-weight: 600;
+            text-decoration: none; transition: background 0.15s;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.75);
+            background: rgba(255,255,255,0.07);
+        }
+        .page-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .page-btn.active {
+            background: #4CAF50; border-color: #4CAF50;
+            color: #fff; font-weight: 800; cursor: default;
+        }
+        .page-btn.disabled {
+            opacity: 0.3; pointer-events: none;
+        }
+        .page-info {
+            color: rgba(255,255,255,0.4); font-size: 0.8rem; margin: 0 0.4rem;
+        }
     </style>
 </head>
 <body>
 <div class="game-panel">
     <nav class="game-nav">
         <a href="{% url 'home' %}">Home</a>
-        <a href="#">How to<br>play</a>
-        <a href="#">Packs</a>
+        <a href="{% url 'how_to_play' %}">How to<br>play</a>
+        <a href="{% url 'store:store' %}">Packs</a>
         <a href="{% url 'cards:collection' %}" class="active">Cards</a>
         <a href="{% url 'accounts:settings' %}">Settings</a>
     </nav>
@@ -140,47 +129,59 @@
         <div class="panel-header">
             <a class="back-link" href="{% url 'cards:collection' %}">← Back</a>
             <h2>{{ rarity_label }} Cards</h2>
+            <span class="count-label">{{ total_cards }} card{{ total_cards|pluralize }}</span>
         </div>
 
-        {% if cards %}
+        {% if page_obj.object_list %}
         <div class="card-grid">
             {% for entry in cards %}
-            <div class="trump-card {{ rarity_meta.css_class }}{% if not entry.owned %} unowned{% endif %}">
+            <div class="card-wrap {% if not entry.owned %}unowned{% endif %}">
 
                 {% if entry.quantity > 1 %}
-                    <div class="qty-badge">x{{ entry.quantity }}</div>
+                    <div class="qty-badge">×{{ entry.quantity }}</div>
                 {% endif %}
 
-                <div class="card-stars">
-                    {% for i in "12345"|make_list %}
-                        {% if forloop.counter <= rarity_meta.stars %}★{% else %}☆{% endif %}
-                    {% endfor %}
-                </div>
+                {% if not entry.owned %}
+                    <div class="unowned-label">NOT OWNED</div>
+                {% endif %}
 
-                <div class="card-img-area">
-                    {% if entry.card.image_url %}
-                        <img src="{{ entry.card.image_url }}" alt="{{ entry.card.player_name }}">
-                    {% else %}
-                        <svg class="silhouette" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="50" cy="32" r="22" fill="currentColor"/>
-                            <path d="M10 130 Q10 72 50 68 Q90 72 90 130Z" fill="currentColor"/>
-                        </svg>
-                    {% endif %}
-                </div>
-
-                <div class="card-name-bar">{{ entry.card.player_name }}</div>
-
-                <div class="card-stats">
-                    <div class="stat-row"><span>FIN</span><span>{{ entry.card.finishing }}</span></div>
-                    <div class="stat-row"><span>DEF</span><span>{{ entry.card.defending }}</span></div>
-                    <div class="stat-row"><span>SPR</span><span>{{ entry.card.sprinting }}</span></div>
-                    <div class="stat-row"><span>TEC</span><span>{{ entry.card.tech }}</span></div>
-                    <div class="stat-row"><span>LDR</span><span>{{ entry.card.leadership }}</span></div>
-                </div>
+                {% card_svg entry.card %}
 
             </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+                <a class="page-btn" href="?page=1">«</a>
+                <a class="page-btn" href="?page={{ page_obj.previous_page_number }}">‹</a>
+            {% else %}
+                <span class="page-btn disabled">«</span>
+                <span class="page-btn disabled">‹</span>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <span class="page-btn active">{{ num }}</span>
+                {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                    <a class="page-btn" href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            <span class="page-info">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a class="page-btn" href="?page={{ page_obj.next_page_number }}">›</a>
+                <a class="page-btn" href="?page={{ page_obj.paginator.num_pages }}">»</a>
+            {% else %}
+                <span class="page-btn disabled">›</span>
+                <span class="page-btn disabled">»</span>
+            {% endif %}
+        </nav>
+        {% endif %}
+
         {% else %}
         <div class="empty-state">
             <div style="font-size:3rem">🃏</div>

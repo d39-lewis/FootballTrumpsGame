@@ -18,12 +18,14 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import TemplateView
 
-from .views import HomeView, LandingView
+from .views import HomeView, HowToPlayView, LandingView
 
 urlpatterns = [
     path('', LandingView.as_view(), name='landing'),
     path('home/', HomeView.as_view(), name='home'),
+    path('how-to-play/', HowToPlayView.as_view(), name='how_to_play'),
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('cards/', include('cards.urls')),
+    path('store/', include('store.urls')),
 ]

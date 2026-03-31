@@ -1,0 +1,296 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packs – Football Trumps</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body {
+            background-image: url("{% static 'images/pitch.svg' %}");
+            background-size: cover; background-position: center;
+            background-repeat: no-repeat; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 2rem 0;
+        }
+        .wrapper { width: 92%; max-width: 1100px; }
+
+        /* Nav */
+        .game-nav {
+            display: flex; border-radius: 12px 12px 0 0; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15); border-bottom: none;
+        }
+        .game-nav a, .game-nav button {
+            flex: 1; text-align: center; padding: 1rem 0.5rem;
+            text-decoration: none; font-size: 1rem; font-weight: 500;
+            color: #fff; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+            border: none; border-right: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.15s; line-height: 1.3; cursor: pointer;
+        }
+        .game-nav a:last-child { border-right: none; }
+        .game-nav a.active { background: rgba(0,0,0,0.82); }
+        .game-nav a:hover:not(.active), .game-nav button:hover { background: rgba(0,0,0,0.68); }
+        .game-nav form { flex: 1; margin: 0; }
+        .game-nav form button {
+            width: 100%; height: 100%;
+            color: rgba(255,255,255,0.7);
+            border-left: 1px solid rgba(255,255,255,0.15);
+            border-right: none;
+        }
+
+        /* Panel */
+        .panel {
+            background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 0 0 12px 12px; padding: 2rem 2rem 2.5rem;
+        }
+
+        /* Header */
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem;
+        }
+        .panel-title {
+            color: #fff; font-size: 1.3rem; font-weight: 800;
+            display: flex; align-items: center; gap: 0.6rem;
+        }
+        .panel-title::before {
+            content: ''; display: inline-block;
+            width: 4px; height: 1.3rem;
+            background: #4CAF50; border-radius: 2px;
+        }
+        .points-badge {
+            background: rgba(76,175,80,0.15); border: 1px solid rgba(76,175,80,0.4);
+            color: #81c784; font-size: 0.9rem; font-weight: 700;
+            padding: 0.4rem 1rem; border-radius: 20px;
+        }
+
+        /* Pack grid */
+        .packs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.4rem;
+        }
+
+        /* Pack card */
+        .pack-card {
+            display: flex; flex-direction: column; align-items: center;
+            border-radius: 14px; padding: 1.5rem 1rem 1.2rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .pack-card:hover { transform: translateY(-4px); }
+
+        .pack-bronze { background: linear-gradient(160deg, rgba(120,70,20,0.55), rgba(80,40,10,0.75)); border-color: rgba(205,127,50,0.4); }
+        .pack-bronze:hover { border-color: rgba(205,127,50,0.8); }
+        .pack-silver { background: linear-gradient(160deg, rgba(80,100,120,0.55), rgba(50,65,80,0.75)); border-color: rgba(160,190,210,0.4); }
+        .pack-silver:hover { border-color: rgba(160,190,210,0.8); }
+        .pack-gold   { background: linear-gradient(160deg, rgba(120,100,10,0.55), rgba(90,70,5,0.75));  border-color: rgba(255,200,0,0.4); }
+        .pack-gold:hover   { border-color: rgba(255,200,0,0.8); }
+        .pack-premium{ background: linear-gradient(160deg, rgba(80,20,120,0.55), rgba(50,10,80,0.75));  border-color: rgba(180,80,255,0.4); }
+        .pack-premium:hover{ border-color: rgba(180,80,255,0.8); }
+
+        /* Pack bag SVG */
+        .pack-bag { width: 130px; height: 165px; margin-bottom: 1.1rem; }
+
+        /* Pack name */
+        .pack-name {
+            font-size: 1.05rem; font-weight: 800; color: #fff;
+            letter-spacing: 0.5px; margin-bottom: 0.3rem; text-align: center;
+        }
+
+        /* Pack info */
+        .pack-info {
+            color: rgba(255,255,255,0.55); font-size: 0.78rem;
+            margin-bottom: 1rem; text-align: center; line-height: 1.5;
+        }
+
+        /* Cost + buy */
+        .pack-footer { width: 100%; }
+        .buy-form { width: 100%; }
+        .btn-buy {
+            width: 100%; padding: 0.65rem 0; border: none; border-radius: 8px;
+            font-size: 0.95rem; font-weight: 800; cursor: pointer;
+            transition: filter 0.15s; letter-spacing: 0.3px;
+        }
+        .btn-buy:hover { filter: brightness(1.15); }
+        .btn-buy:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
+
+        .pack-bronze .btn-buy  { background: linear-gradient(135deg, #cd7f32, #a0522d); color: #fff; }
+        .pack-silver .btn-buy  { background: linear-gradient(135deg, #a0b8c8, #6e8fa5); color: #111; }
+        .pack-gold   .btn-buy  { background: linear-gradient(135deg, #ffd700, #e6a800); color: #111; }
+        .pack-premium .btn-buy { background: linear-gradient(135deg, #b44fff, #7b2fd4); color: #fff; }
+
+        .cost-label {
+            text-align: center; font-size: 0.82rem; color: rgba(255,255,255,0.5);
+            margin-bottom: 0.5rem;
+        }
+        .cost-label strong { color: #fff; font-size: 1rem; }
+
+        .cant-afford { color: #f87171; font-size: 0.72rem; text-align: center; margin-top: 0.4rem; }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <nav class="game-nav">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'how_to_play' %}">How to<br>play</a>
+        <a href="{% url 'store:store' %}" class="active">Packs</a>
+        <a href="{% url 'cards:collection' %}">Cards</a>
+        <a href="{% url 'accounts:settings' %}">Settings</a>
+        <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+    </nav>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h2 class="panel-title">Pack Store</h2>
+            <span class="points-badge">{{ points }} pts</span>
+        </div>
+
+        <div class="packs-grid">
+            {% for pack in packs %}
+            <div class="pack-card pack-{{ pack.type }}">
+
+                <!-- Pack bag illustration -->
+                {% if pack.type == 'bronze' %}
+                <svg class="pack-bag" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="bgB" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#e8913a"/>
+                            <stop offset="100%" stop-color="#9a4f10"/>
+                        </linearGradient>
+                        <linearGradient id="shineB" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="rgba(255,255,255,0.25)"/>
+                            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Bag body -->
+                    <path d="M10,30 Q65,18 120,30 L125,140 Q65,155 5,140 Z" fill="url(#bgB)"/>
+                    <!-- Shine -->
+                    <path d="M10,30 Q65,18 120,30 L118,75 Q65,62 12,75 Z" fill="url(#shineB)" opacity="0.5"/>
+                    <!-- Top seal -->
+                    <rect x="8" y="20" width="114" height="14" rx="4" fill="#cd7f32"/>
+                    <path d="M8,23 Q65,14 122,23" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none"/>
+                    <!-- Bottom seal -->
+                    <rect x="8" y="136" width="114" height="14" rx="4" fill="#cd7f32"/>
+                    <!-- Stars -->
+                    <text x="22" y="50" font-size="12" fill="rgba(255,220,100,0.9)">✦</text>
+                    <text x="98" y="50" font-size="12" fill="rgba(255,220,100,0.9)">✦</text>
+                    <!-- Pack name -->
+                    <text x="65" y="75" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="900" fill="#fff" stroke="#7a3a08" stroke-width="3" paint-order="stroke">BRONZE</text>
+                    <text x="65" y="93" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="900" fill="#fff" stroke="#7a3a08" stroke-width="3" paint-order="stroke">PACK</text>
+                    <!-- Football -->
+                    <circle cx="65" cy="120" r="20" fill="white" stroke="#333" stroke-width="1.5"/>
+                    <polygon points="65,104 74,111 71,122 59,122 56,111" fill="#1a1a1a"/>
+                    <polygon points="56,111 47,113 45,104 53,99 65,104" fill="#1a1a1a"/>
+                    <polygon points="74,111 83,113 85,104 77,99 65,104" fill="#1a1a1a"/>
+                </svg>
+
+                {% elif pack.type == 'silver' %}
+                <svg class="pack-bag" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="bgS" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#b8d0e0"/>
+                            <stop offset="100%" stop-color="#5a7a92"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M10,30 Q65,18 120,30 L125,140 Q65,155 5,140 Z" fill="url(#bgS)"/>
+                    <path d="M10,30 Q65,18 120,30 L118,75 Q65,62 12,75 Z" fill="rgba(255,255,255,0.3)"/>
+                    <rect x="8" y="20" width="114" height="14" rx="4" fill="#8aafc5"/>
+                    <path d="M8,23 Q65,14 122,23" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none"/>
+                    <rect x="8" y="136" width="114" height="14" rx="4" fill="#8aafc5"/>
+                    <text x="22" y="50" font-size="12" fill="rgba(200,230,255,0.9)">✦</text>
+                    <text x="98" y="50" font-size="12" fill="rgba(200,230,255,0.9)">✦</text>
+                    <text x="65" y="75" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="900" fill="#fff" stroke="#2a4a60" stroke-width="3" paint-order="stroke">SILVER</text>
+                    <text x="65" y="93" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="900" fill="#fff" stroke="#2a4a60" stroke-width="3" paint-order="stroke">PACK</text>
+                    <circle cx="65" cy="120" r="20" fill="white" stroke="#333" stroke-width="1.5"/>
+                    <polygon points="65,104 74,111 71,122 59,122 56,111" fill="#1a1a1a"/>
+                    <polygon points="56,111 47,113 45,104 53,99 65,104" fill="#1a1a1a"/>
+                    <polygon points="74,111 83,113 85,104 77,99 65,104" fill="#1a1a1a"/>
+                </svg>
+
+                {% elif pack.type == 'gold' %}
+                <svg class="pack-bag" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="bgG" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffe066"/>
+                            <stop offset="100%" stop-color="#b8860b"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M10,30 Q65,18 120,30 L125,140 Q65,155 5,140 Z" fill="url(#bgG)"/>
+                    <path d="M10,30 Q65,18 120,30 L118,75 Q65,62 12,75 Z" fill="rgba(255,255,255,0.3)"/>
+                    <rect x="8" y="20" width="114" height="14" rx="4" fill="#e6ac00"/>
+                    <path d="M8,23 Q65,14 122,23" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" fill="none"/>
+                    <rect x="8" y="136" width="114" height="14" rx="4" fill="#e6ac00"/>
+                    <text x="18" y="50" font-size="12" fill="rgba(255,255,150,0.95)">✦</text>
+                    <text x="94" y="50" font-size="12" fill="rgba(255,255,150,0.95)">✦</text>
+                    <text x="56" y="50" font-size="10" fill="rgba(255,255,150,0.95)">✦</text>
+                    <text x="65" y="75" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="900" fill="#fff" stroke="#7a5c00" stroke-width="3" paint-order="stroke">GOLD</text>
+                    <text x="65" y="93" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="900" fill="#fff" stroke="#7a5c00" stroke-width="3" paint-order="stroke">PACK</text>
+                    <circle cx="65" cy="120" r="20" fill="white" stroke="#333" stroke-width="1.5"/>
+                    <polygon points="65,104 74,111 71,122 59,122 56,111" fill="#1a1a1a"/>
+                    <polygon points="56,111 47,113 45,104 53,99 65,104" fill="#1a1a1a"/>
+                    <polygon points="74,111 83,113 85,104 77,99 65,104" fill="#1a1a1a"/>
+                </svg>
+
+                {% else %}
+                <svg class="pack-bag" viewBox="0 0 130 165" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="bgP" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#c060ff"/>
+                            <stop offset="100%" stop-color="#5a0090"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M10,30 Q65,18 120,30 L125,140 Q65,155 5,140 Z" fill="url(#bgP)"/>
+                    <path d="M10,30 Q65,18 120,30 L118,75 Q65,62 12,75 Z" fill="rgba(255,255,255,0.25)"/>
+                    <rect x="8" y="20" width="114" height="14" rx="4" fill="#9b30d4"/>
+                    <path d="M8,23 Q65,14 122,23" stroke="rgba(255,200,255,0.4)" stroke-width="1.5" fill="none"/>
+                    <rect x="8" y="136" width="114" height="14" rx="4" fill="#9b30d4"/>
+                    <!-- Crown -->
+                    <text x="55" y="52" font-size="14" fill="#ffd700">👑</text>
+                    <text x="20" y="55" font-size="10" fill="rgba(255,220,100,0.9)">✦</text>
+                    <text x="97" y="55" font-size="10" fill="rgba(255,220,100,0.9)">✦</text>
+                    <text x="65" y="75" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="14" font-weight="900" fill="#ffd700" stroke="#3a006a" stroke-width="3" paint-order="stroke">PREMIUM</text>
+                    <text x="65" y="93" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="15" font-weight="900" fill="#ffd700" stroke="#3a006a" stroke-width="3" paint-order="stroke">PACK</text>
+                    <circle cx="65" cy="120" r="20" fill="white" stroke="#333" stroke-width="1.5"/>
+                    <polygon points="65,104 74,111 71,122 59,122 56,111" fill="#1a1a1a"/>
+                    <polygon points="56,111 47,113 45,104 53,99 65,104" fill="#1a1a1a"/>
+                    <polygon points="74,111 83,113 85,104 77,99 65,104" fill="#1a1a1a"/>
+                </svg>
+                {% endif %}
+
+                <p class="pack-name">{{ pack.label }}</p>
+                <p class="pack-info">
+                    {{ pack.cards }} card{{ pack.cards|pluralize }}<br>
+                    {% if pack.type == 'bronze' %}Common &amp; Rare only
+                    {% elif pack.type == 'silver' %}Common → Epic chances
+                    {% elif pack.type == 'gold' %}Higher Rare+ odds
+                    {% else %}Best odds · Legendary &amp; Epic
+                    {% endif %}
+                </p>
+
+                <div class="pack-footer">
+                    <p class="cost-label"><strong>{{ pack.cost }}</strong> pts</p>
+                    {% if points >= pack.cost %}
+                    <form class="buy-form" method="post" action="{% url 'store:open_pack' pack.type %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-buy">Open Pack</button>
+                    </form>
+                    {% else %}
+                    <button class="btn-buy" disabled>Open Pack</button>
+                    <p class="cant-afford">Need {{ pack.cost|add:"-1"|add:"1" }} pts — you have {{ points }}</p>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

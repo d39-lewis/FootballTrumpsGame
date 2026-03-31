@@ -1,0 +1,152 @@
+{% load static card_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ pack_label }} Result – Football Trumps</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body {
+            background-image: url("{% static 'images/pitch.svg' %}");
+            background-size: cover; background-position: center;
+            background-repeat: no-repeat; min-height: 100vh;
+            display: flex; align-items: flex-start; justify-content: center;
+            padding: 2rem 0;
+        }
+        .wrapper { width: 92%; max-width: 1000px; }
+
+        /* Nav */
+        .game-nav {
+            display: flex; border-radius: 12px 12px 0 0; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15); border-bottom: none;
+        }
+        .game-nav a, .game-nav button {
+            flex: 1; text-align: center; padding: 1rem 0.5rem;
+            text-decoration: none; font-size: 1rem; font-weight: 500;
+            color: #fff; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+            border: none; border-right: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.15s; line-height: 1.3; cursor: pointer;
+        }
+        .game-nav a:last-child { border-right: none; }
+        .game-nav a.active { background: rgba(0,0,0,0.82); }
+        .game-nav a:hover:not(.active), .game-nav button:hover { background: rgba(0,0,0,0.68); }
+        .game-nav form { flex: 1; margin: 0; }
+        .game-nav form button {
+            width: 100%; height: 100%; color: rgba(255,255,255,0.7);
+            border-left: 1px solid rgba(255,255,255,0.15); border-right: none;
+        }
+
+        /* Panel */
+        .panel {
+            background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 0 0 12px 12px; padding: 2rem 2rem 2.5rem;
+        }
+
+        /* Header */
+        .result-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.8rem;
+        }
+        .result-title { color: #fff; font-size: 1.3rem; font-weight: 800; }
+        .result-subtitle { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 0.2rem; }
+
+        .summary-badges { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+        .badge {
+            padding: 0.35rem 0.9rem; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 700;
+        }
+        .badge-new     { background: rgba(76,175,80,0.2);  border: 1px solid rgba(76,175,80,0.5);  color: #81c784; }
+        .badge-dup     { background: rgba(255,152,0,0.15); border: 1px solid rgba(255,152,0,0.4);  color: #ffb74d; }
+        .badge-points  { background: rgba(76,175,80,0.1);  border: 1px solid rgba(76,175,80,0.3);  color: #a5d6a7; }
+
+        /* Cards grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        /* Card wrapper */
+        .card-wrap {
+            position: relative;
+            transition: transform 0.2s;
+        }
+        .card-wrap:hover { transform: translateY(-5px) scale(1.03); }
+        .card-wrap.is-dup { filter: grayscale(0.5) brightness(0.6); }
+
+        .card-status {
+            position: absolute; top: 10px; right: 10px; z-index: 10;
+            font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px;
+            padding: 3px 8px; border-radius: 10px; pointer-events: none;
+        }
+        .status-new { background: #4CAF50; color: #fff; }
+        .status-dup { background: rgba(255,152,0,0.85); color: #fff; }
+
+        /* Actions */
+        .result-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn-primary {
+            background: #4CAF50; color: #fff; border: none; border-radius: 8px;
+            padding: 0.65rem 1.6rem; font-size: 0.95rem; font-weight: 700;
+            cursor: pointer; text-decoration: none; transition: background 0.15s;
+        }
+        .btn-primary:hover { background: #388E3C; }
+        .btn-secondary {
+            background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+            padding: 0.65rem 1.4rem; font-size: 0.95rem;
+            text-decoration: none; transition: background 0.15s;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <nav class="game-nav">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'how_to_play' %}">How to<br>play</a>
+        <a href="{% url 'store:store' %}" class="active">Packs</a>
+        <a href="{% url 'cards:collection' %}">Cards</a>
+        <a href="{% url 'accounts:settings' %}">Settings</a>
+        <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+    </nav>
+
+    <div class="panel">
+        <div class="result-header">
+            <div>
+                <h2 class="result-title">{{ pack_label }} Opened!</h2>
+                <p class="result-subtitle">Here are the {{ results|length }} card{{ results|length|pluralize }} from your pack</p>
+            </div>
+            <div class="summary-badges">
+                <span class="badge badge-new">{{ new_count }} new</span>
+                {% if dup_count %}<span class="badge badge-dup">{{ dup_count }} already owned</span>{% endif %}
+                <span class="badge badge-points">{{ points }} pts remaining</span>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            {% for result in results %}
+            <div class="card-wrap {% if not result.added %}is-dup{% endif %}">
+                <span class="card-status {% if result.added %}status-new{% else %}status-dup{% endif %}">
+                    {% if result.added %}NEW{% else %}OWNED{% endif %}
+                </span>
+                {% card_svg result.card %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="result-actions">
+            <a href="{% url 'store:store' %}" class="btn-primary">Open Another Pack</a>
+            <a href="{% url 'cards:collection' %}" class="btn-secondary">View Collection</a>
+            <a href="{% url 'home' %}" class="btn-secondary">Home</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

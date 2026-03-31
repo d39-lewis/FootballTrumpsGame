@@ -11,11 +11,17 @@ class LandingView(View):
 
 
 @method_decorator(login_required, name='dispatch')
+class HowToPlayView(View):
+    def get(self, request):
+        return render(request, 'how_to_play.html')
+
+
+@method_decorator(login_required, name='dispatch')
 class HomeView(View):
     def get(self, request):
         context = {
             'wins': 0,
             'losses': 0,
-            'points': 0,
+            'points': request.user.settings.points,
         }
         return render(request, 'home.html', context)
