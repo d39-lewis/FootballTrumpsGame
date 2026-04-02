@@ -148,7 +148,7 @@
 
             <!-- Football "Play" button -->
             <div class="play-area">
-                <a href="#" class="play-btn">
+                <a href="{% url 'gameplay:deck' %}" class="play-btn">
                     <svg viewBox="0 0 200 200" width="175" height="175" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <clipPath id="bc"><circle cx="100" cy="100" r="87"/></clipPath>
@@ -206,5 +206,6 @@
 
         </div>
     </div>
+{% include 'includes/bg_music.html' %}
 </body>
 </html>

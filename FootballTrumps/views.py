@@ -19,9 +19,14 @@ class HowToPlayView(View):
 @method_decorator(login_required, name='dispatch')
 class HomeView(View):
     def get(self, request):
+        from gameplay.models import GameSession
+        sessions = GameSession.objects.filter(user=request.user)
         context = {
-            'wins': 0,
-            'losses': 0,
+            'wins':   sessions.filter(status=GameSession.STATUS_WON).count(),
+            'losses': sessions.filter(status__in=[
+                GameSession.STATUS_LOST,
+                GameSession.STATUS_ABANDONED,
+            ]).count(),
             'points': request.user.settings.points,
         }
         return render(request, 'home.html', context)
