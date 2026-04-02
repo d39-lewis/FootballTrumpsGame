@@ -1,0 +1,48 @@
+{% load static %}
+{% if user.is_authenticated and user.settings.music_enabled %}
+<audio id="bg-music" loop preload="auto">
+    <source src="{% static 'audio/crowd-cheering-clapping-at-stadium-gregor-quendel-1-00-30.mp3' %}" type="audio/mpeg">
+</audio>
+<script>
+(function () {
+    var audio = document.getElementById('bg-music');
+    audio.volume = 0.3;
+
+    /* Restore playback position so it feels continuous across page loads */
+    var savedTime = parseFloat(localStorage.getItem('ftMusicTime') || '0');
+    if (savedTime > 0) {
+        audio.addEventListener('loadedmetadata', function () {
+            if (audio.duration && !isNaN(audio.duration)) {
+                audio.currentTime = savedTime % audio.duration;
+            }
+        }, { once: true });
+    }
+
+    function startAudio() {
+        audio.play().catch(function () {});
+    }
+
+    /* Attempt immediate autoplay */
+    startAudio();
+
+    /* On every interaction, retry until audio is actually playing */
+    ['mousedown', 'click', 'keydown', 'touchstart'].forEach(function (ev) {
+        document.addEventListener(ev, function handler() {
+            startAudio();
+            if (!audio.paused) {
+                ['mousedown', 'click', 'keydown', 'touchstart'].forEach(function (e) {
+                    document.removeEventListener(e, handler);
+                });
+            }
+        });
+    });
+
+    /* Save position before navigating so next page can resume from same spot */
+    function savePosition() {
+        localStorage.setItem('ftMusicTime', audio.currentTime.toString());
+    }
+    window.addEventListener('pagehide',     savePosition);
+    window.addEventListener('beforeunload', savePosition);
+}());
+</script>
+{% endif %}

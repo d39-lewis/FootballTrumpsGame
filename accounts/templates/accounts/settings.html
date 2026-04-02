@@ -32,3 +32,21 @@
     </form>
 </div>
 {% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+    var checkbox = document.getElementById('id_music_enabled');
+    if (!checkbox) return;
+    checkbox.addEventListener('change', function () {
+        var bgMusic = document.getElementById('bg-music');
+        if (!bgMusic) return;
+        if (checkbox.checked) {
+            bgMusic.play().catch(function () {});
+        } else {
+            bgMusic.pause();
+        }
+    });
+}());
+</script>
+{% endblock %}
