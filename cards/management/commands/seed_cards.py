@@ -12,15 +12,13 @@ from cards.models import Card, Rarity
 SEED_DATA = {
     # ── COMMON (50) ───────────────────────────────────────────────────────────
     Rarity.COMMON: [
-        # Existing 7 (kept as-is)
         dict(player_name='Marcus Radford',       finishing=72, defending=40, sprinting=85, strength=72, tech=72, leadership=65),
         dict(player_name='Jake Grellish',         finishing=65, defending=42, sprinting=72, strength=68, tech=74, leadership=58),
         dict(player_name='Jaydon Sancher',        finishing=72, defending=38, sprinting=80, strength=58, tech=78, leadership=55),
         dict(player_name='Rahim Sterlingo',       finishing=74, defending=45, sprinting=88, strength=62, tech=76, leadership=60),
         dict(player_name='Rent Alex-Aron',        finishing=62, defending=76, sprinting=74, strength=65, tech=82, leadership=70),
-        dict(player_name='Project 49',            finishing=60, defending=40, sprinting=82, strength=68, tech=49, leadership=75),
+        dict(player_name='Subject 49',            finishing=60, defending=40, sprinting=82, strength=68, tech=49, leadership=75),
         dict(player_name='Marquini',              finishing=32, defending=93, sprinting=77, strength=84, tech=50, leadership=84),
-        # 43 new commons
         dict(player_name='Jordan Pickforde',      finishing=20, defending=88, sprinting=52, strength=72, tech=60, leadership=75),
         dict(player_name='Kieran Tripper',        finishing=55, defending=78, sprinting=72, strength=62, tech=70, leadership=72),
         dict(player_name='Kalvin Phillipps',      finishing=52, defending=72, sprinting=68, strength=74, tech=65, leadership=68),
@@ -94,13 +92,11 @@ SEED_DATA = {
 
     # ── ULTRA RARE (15) ───────────────────────────────────────────────────────
     Rarity.ULTRA_RARE: [
-        # Existing 5
         dict(player_name='Mo Salah',              finishing=90, defending=45, sprinting=92, strength=72, tech=85, leadership=78),
         dict(player_name='Harry Kayne',           finishing=92, defending=50, sprinting=78, strength=85, tech=82, leadership=88),
         dict(player_name='Vinicius Juniorr',      finishing=88, defending=42, sprinting=95, strength=68, tech=88, leadership=72),
         dict(player_name='Bukayo Sakka',          finishing=85, defending=65, sprinting=86, strength=70, tech=86, leadership=78),
         dict(player_name='Rodrigo Cascante',      finishing=68, defending=85, sprinting=72, strength=82, tech=88, leadership=90),
-        # 10 new ultra rares
         dict(player_name='Heung-Min Sonn',        finishing=88, defending=55, sprinting=90, strength=68, tech=85, leadership=78),
         dict(player_name='Antoine Griezman',      finishing=88, defending=60, sprinting=82, strength=72, tech=86, leadership=82),
         dict(player_name='Karim Benzima',         finishing=90, defending=45, sprinting=80, strength=80, tech=88, leadership=84),
@@ -115,21 +111,19 @@ SEED_DATA = {
 
     # ── LEGENDARY (10) ────────────────────────────────────────────────────────
     Rarity.LEGENDARY: [
-        # Existing 5
-        dict(player_name='Erling Haalanddd',      finishing=96, defending=40, sprinting=92, strength=95, tech=78, leadership=82),
-        dict(player_name='Kylian Mbappi',         finishing=92, defending=45, sprinting=98, strength=78, tech=90, leadership=82),
-        dict(player_name='Lionel Messii',         finishing=94, defending=40, sprinting=85, strength=62, tech=96, leadership=90),
-        dict(player_name='Cristiano Ronaldoo',    finishing=94, defending=48, sprinting=90, strength=88, tech=88, leadership=92),
-        dict(player_name='Neymar Juniorr',        finishing=90, defending=38, sprinting=88, strength=65, tech=94, leadership=78),
-        # 5 new legendaries (all-time greats, altered names)
-        dict(player_name='Zinedine Zidann',       finishing=88, defending=65, sprinting=80, strength=75, tech=96, leadership=92),
-        dict(player_name='Ronaldinhoo',           finishing=90, defending=35, sprinting=85, strength=68, tech=98, leadership=82),
-        dict(player_name='Thierry Henri',         finishing=94, defending=50, sprinting=94, strength=80, tech=88, leadership=86),
-        dict(player_name='Ronahldoo',             finishing=88, defending=40, sprinting=92, strength=72, tech=96, leadership=82),
-        dict(player_name='Diego Maradonna',       finishing=92, defending=42, sprinting=84, strength=70, tech=98, leadership=90),
+        dict(player_name='Lionel Messii',         finishing=99, defending=75, sprinting=94, strength=80, tech=99, leadership=96),
+        dict(player_name='Cristiano Ronaldoo',    finishing=98, defending=68, sprinting=97, strength=93, tech=93, leadership=96),
+        dict(player_name='Neymar Juniorr',        finishing=98, defending=75, sprinting=96, strength=82, tech=98, leadership=92),
+        dict(player_name='Zinedine Zidann',       finishing=93, defending=85, sprinting=88, strength=86, tech=98, leadership=96),
+        dict(player_name='Ronaldinhoo',           finishing=98, defending=75, sprinting=94, strength=82, tech=99, leadership=94),
+        dict(player_name='Erling Haalanddd',      finishing=99, defending=68, sprinting=98, strength=99, tech=86, leadership=92),
+        dict(player_name='Kylian Mbappi',         finishing=98, defending=72, sprinting=99, strength=88, tech=95, leadership=92),
+        dict(player_name='Thierry Henri',         finishing=98, defending=72, sprinting=98, strength=88, tech=94, leadership=93),
+        dict(player_name='Ronahldoo',             finishing=99, defending=72, sprinting=97, strength=86, tech=98, leadership=92),
+        dict(player_name='Diego Maradonna',       finishing=98, defending=75, sprinting=91, strength=84, tech=99, leadership=96),
     ],
 
-    # ── EPIC (5) — unchanged ──────────────────────────────────────────────────
+    # ── EPIC (5) ──────────────────────────────────────────────────
     Rarity.EPIC: [
         dict(player_name='Lamine Yamall',         finishing=88, defending=55, sprinting=90, strength=65, tech=92, leadership=78),
         dict(player_name='Jude Bellinghem',       finishing=88, defending=75, sprinting=85, strength=82, tech=88, leadership=90),
@@ -141,7 +135,7 @@ SEED_DATA = {
 
 
 class Command(BaseCommand):
-    help = 'Seed the database with 100 cards (Common 50, Rare 20, Ultra Rare 15, Legendary 10, Epic 5).'
+    help = 'Seed the database with 100 cards (Common 50, Rare 20, Ultra Rare 15, Epic 5, Legendary 10).'
 
     def add_arguments(self, parser):
         parser.add_argument(
