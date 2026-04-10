@@ -4,6 +4,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ── Security ──────────────────────────────────────────────────
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tc-shs+6(*m(#hhr0=778n7_2#iygt+_7&h28@f_xp&y&u=g#l')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
@@ -56,6 +57,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'FootballTrumps.wsgi.application'
 
+# ── Database ──────────────────────────────────────────────────
+# Uses DATABASE_URL on Railway, falls back to SQLite locally
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
@@ -74,11 +77,13 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# ── Static Files ──────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# ── Media Files ───────────────────────────────────────────────
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -86,3 +91,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 LOGIN_URL = 'landing'
 LOGIN_REDIRECT_URL = 'home'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://footballtrumpsgame-production.up.railway.app',
+]
+
